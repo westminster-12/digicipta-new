@@ -1,0 +1,179 @@
+/* ============================================================
+   Admin Login — dark premium, isolated from public site style
+   ============================================================ */
+
+.admin-login-root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0f1a;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+.admin-login-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.admin-login-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.25;
+}
+
+.admin-login-orb-1 {
+  width: 500px;
+  height: 500px;
+  background: #0d9488;
+  top: -120px;
+  right: -120px;
+}
+
+.admin-login-orb-2 {
+  width: 400px;
+  height: 400px;
+  background: #1e3a5f;
+  bottom: -80px;
+  left: -80px;
+}
+
+.admin-login-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2.5rem 2.25rem;
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+}
+
+.admin-login-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 2rem;
+}
+
+.admin-login-brand-mark {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.admin-login-brand-name {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.admin-login-title {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.admin-login-sub {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.afl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.afl-field label {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.afl-field input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  outline: none;
+  width: 100%;
+}
+
+.afl-field input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.afl-field input:focus {
+  border-color: #0d9488;
+  background: rgba(13, 148, 136, 0.08);
+}
+
+.admin-login-error {
+  color: #f87171;
+  font-size: 0.8125rem;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 8px;
+  padding: 0.625rem 0.875rem;
+  line-height: 1.4;
+}
+
+.admin-login-btn {
+  margin-top: 0.25rem;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  letter-spacing: -0.01em;
+}
+
+.admin-login-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.admin-login-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
