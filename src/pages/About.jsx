@@ -5,7 +5,7 @@ import './About.css';
 
 const teamMembers = [
   {
-    name: 'Kevin Liem Munandar',
+    name: 'Kevin Liemmunandar',
     role: 'CEO',
     img: 'about-us/foto-id/kevin.png',
   },
@@ -109,7 +109,7 @@ const About = () => {
               <span className="section-label">Perjalanan Kami</span>
               <h2>Dimulai dari satu keyakinan</h2>
               <p>
-                PT. Versa Digicipta Semesta lahir di Manado pada 2018 dari keyakinan sederhana: bisnis lokal berhak
+                <b>PT. Versa Digicipta Semesta (Versa Design Studio)</b> lahir di Manado pada 2018 dari keyakinan sederhana: bisnis lokal berhak
                 punya visual yang tidak kalah dari merek besar. Saat itu, banyak UMKM di Manado kesulitan menemukan
                 vendor yang bisa menangani desain sekaligus produksi dengan standar yang konsisten.
               </p>
@@ -119,7 +119,7 @@ const About = () => {
                 yang mereka bayangkan.
               </p>
               <p>
-                Lebih dari 8 tahun kemudian, kami sudah melayani ratusan klien, dari toko kecil di pasar tradisional
+                Lebih dari 8 tahun kemudian, kami sudah melayani ribuan klien, dari toko kecil di pasar tradisional
                 sampai perusahaan dengan kebutuhan branding skala besar, dengan dua lokasi di Manado dan Tahuna.
               </p>
             </div>
