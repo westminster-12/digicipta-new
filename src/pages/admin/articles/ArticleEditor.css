@@ -5,7 +5,7 @@
 .article-editor-root {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 56px);
+  height: calc(100vh - 120px); /* 56px topbar + 4rem (64px) padding */
   overflow: hidden;
 }
 
@@ -68,6 +68,10 @@
   flex-direction: column;
   gap: 1rem;
   overflow-y: auto;
+}
+
+.ae-sidebar > * {
+  flex-shrink: 0;
 }
 
 /* ─── Title ─── */

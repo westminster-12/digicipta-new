@@ -36,6 +36,52 @@ function countKeywordOccurrences(text, keyword) {
   return (text.toLowerCase().match(new RegExp(escaped.toLowerCase(), 'g')) || []).length;
 }
 
+const compressImageToWebp = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        const MAX_SIZE = 1920;
+        
+        // Resize down if too large
+        if (width > MAX_SIZE || height > MAX_SIZE) {
+          if (width > height) {
+            height = Math.round((height * MAX_SIZE) / width);
+            width = MAX_SIZE;
+          } else {
+            width = Math.round((width * MAX_SIZE) / height);
+            height = MAX_SIZE;
+          }
+        }
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const newFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".webp", {
+              type: "image/webp",
+              lastModified: Date.now(),
+            });
+            resolve(newFile);
+          } else {
+            reject(new Error('Gagal memproses gambar.'));
+          }
+        }, 'image/webp', 0.8);
+      };
+      img.onerror = () => reject(new Error('Format gambar tidak didukung atau rusak.'));
+    };
+    reader.onerror = () => reject(new Error('Gagal membaca file.'));
+  });
+};
+
 // ─── SEO ANALYZER ────────────────────────────────────────────
 function SeoAnalyzer({ title, slug, content, excerpt, seoTitle, seoDescription, focusKeyword, coverImage }) {
   const plainText = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').toLowerCase().trim();
@@ -177,6 +223,9 @@ function SeoAnalyzer({ title, slug, content, excerpt, seoTitle, seoDescription, 
 
 // ─── EDITOR TOOLBAR ──────────────────────────────────────────
 function Toolbar({ editor }) {
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageFileRef = useRef();
+
   if (!editor) return null;
 
   const btn = (action, active, title, icon) => (
@@ -195,9 +244,43 @@ function Toolbar({ editor }) {
     if (url) editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }
 
+  async function uploadContentImage(file) {
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const webpFile = await compressImageToWebp(file);
+      const path = `content/${Date.now()}.webp`;
+      const { error } = await supabase.storage.from('article-images').upload(path, webpFile);
+      if (!error) {
+        const { data } = supabase.storage.from('article-images').getPublicUrl(path);
+        editor.chain().focus().setImage({ src: data.publicUrl }).run();
+      } else {
+        console.error('Supabase upload error:', error);
+        alert(`Gagal mengupload gambar: ${error.message || 'Unknown error'}`);
+      }
+    } catch (err) {
+      console.error('Exception during upload:', err);
+      alert(`Terjadi kesalahan: ${err.message}`);
+    } finally {
+      setUploadingImage(false);
+    }
+  }
+
   return (
-    <div className="editor-toolbar">
-      <div className="editor-toolbar-group">
+    <>
+      {uploadingImage && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999, 
+          background: 'rgba(0,0,0,0.6)', color: '#fff', 
+          display: 'flex', flexDirection: 'column', 
+          alignItems: 'center', justifyContent: 'center'
+        }}>
+          <span style={{ fontSize: '1.2rem', marginBottom: '10px', fontWeight: 600 }}>Menyiapkan & Mengupload Gambar...</span>
+          <span style={{ fontSize: '0.9rem', color: '#e2e8f0' }}>Proses kompresi ke WebP sedang berjalan. Mohon tunggu.</span>
+        </div>
+      )}
+      <div className="editor-toolbar">
+        <div className="editor-toolbar-group">
         {btn(() => editor.chain().focus().toggleHeading({ level: 2 }).run(), editor.isActive('heading', { level: 2 }), 'Heading 2', <Heading1 size={15} />)}
         {btn(() => editor.chain().focus().toggleHeading({ level: 3 }).run(), editor.isActive('heading', { level: 3 }), 'Heading 3', <Heading2 size={15} />)}
         {btn(() => editor.chain().focus().toggleHeading({ level: 4 }).run(), editor.isActive('heading', { level: 4 }), 'Heading 4', <Heading3 size={15} />)}
@@ -226,6 +309,20 @@ function Toolbar({ editor }) {
       <div className="editor-toolbar-divider" />
       <div className="editor-toolbar-group">
         {btn(addLink, editor.isActive('link'), 'Add Link', <Link2 size={15} />)}
+        <button
+          type="button"
+          onClick={() => imageFileRef.current?.click()}
+          className={`editor-toolbar-btn ${uploadingImage ? 'uploading' : ''}`}
+          title="Add Image"
+          disabled={uploadingImage}
+          style={{ opacity: uploadingImage ? 0.5 : 1 }}
+        >
+          <ImageIcon size={15} />
+        </button>
+        <input ref={imageFileRef} type="file" accept="image/*" hidden onChange={e => {
+            uploadContentImage(e.target.files?.[0]);
+            e.target.value = '';
+        }} />
       </div>
       <div className="editor-toolbar-divider" />
       <div className="editor-toolbar-group">
@@ -233,6 +330,7 @@ function Toolbar({ editor }) {
         {btn(() => editor.chain().focus().redo().run(), false, 'Redo', <Redo2 size={15} />)}
       </div>
     </div>
+    </>
   );
 }
 
@@ -312,15 +410,22 @@ export default function ArticleEditor() {
   async function uploadCover(file) {
     if (!file) return;
     setUploading(true);
-    const ext = file.name.split('.').pop();
-    const path = `covers/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from('article-images').upload(path, file, { upsert: true });
-    if (!error) {
-      const { data } = supabase.storage.from('article-images').getPublicUrl(path);
-      setForm(f => ({ ...f, cover_image: data.publicUrl }));
-      setCoverPreview(data.publicUrl);
+    try {
+      const webpFile = await compressImageToWebp(file);
+      const path = `covers/${Date.now()}.webp`;
+      const { error } = await supabase.storage.from('article-images').upload(path, webpFile);
+      if (!error) {
+        const { data } = supabase.storage.from('article-images').getPublicUrl(path);
+        setForm(f => ({ ...f, cover_image: data.publicUrl }));
+        setCoverPreview(data.publicUrl);
+      } else {
+        alert('Gagal mengupload cover: ' + error.message);
+      }
+    } catch (err) {
+      alert('Gagal memproses gambar: ' + err.message);
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
   }
 
   async function save(publishOverride) {
@@ -356,6 +461,17 @@ export default function ArticleEditor() {
 
   return (
     <div className="article-editor-root">
+      {uploading && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999, 
+          background: 'rgba(0,0,0,0.6)', color: '#fff', 
+          display: 'flex', flexDirection: 'column', 
+          alignItems: 'center', justifyContent: 'center'
+        }}>
+          <span style={{ fontSize: '1.2rem', marginBottom: '10px', fontWeight: 600 }}>Menyiapkan & Mengupload Cover...</span>
+          <span style={{ fontSize: '0.9rem', color: '#e2e8f0' }}>Proses kompresi ke WebP sedang berjalan. Mohon tunggu.</span>
+        </div>
+      )}
       {/* Top bar */}
       <div className="ae-topbar">
         <button onClick={() => navigate('/admin/articles')} className="adm-btn adm-btn-ghost" style={{ gap: '0.25rem' }}>

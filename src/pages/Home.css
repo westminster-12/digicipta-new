@@ -36,11 +36,21 @@
 .hero-slide {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
   opacity: 0;
   transition: opacity 1s ease-in-out;
   z-index: 1;
+  overflow: hidden;
+}
+
+/* Hero background image — posisi absolut, cover seperti background-size: cover */
+.hero-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .hero-slide.active {

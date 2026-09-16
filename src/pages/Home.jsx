@@ -81,7 +81,7 @@ const promoData = [
     btnText: 'Ikut Sekarang',
     btnLink: 'https://wa.me/628114357393',
     bgDark: true,
-    image: '/home/promo/178608232637-banner_lucky_order-01 (1).jpg',
+    image: '/home/promo/lucky_order.webp',
   },
 ];
 
@@ -157,18 +157,16 @@ const Home = () => {
   useEffect(() => {
     async function fetchHomeArticles() {
       try {
+        // Langsung ambil 3 artikel saja — tidak perlu fetch 50 lalu shuffle di client
         const { data, error } = await supabase
           .from('articles')
           .select('id, title, slug, excerpt, content, cover_image, category, published_at, created_at')
           .eq('status', 'published')
-          .limit(50); // Ambil 50 terbaru untuk diacak
+          .order('published_at', { ascending: false })
+          .limit(3);
 
         if (!error && data && data.length > 0) {
-          // Shuffle array
-          const shuffled = data.sort(() => 0.5 - Math.random());
-          const selected = shuffled.slice(0, 3); // Ambil 3 artikel
-          
-          const mapped = selected.map((item) => {
+          const mapped = data.map((item) => {
             let cleanExcerpt = item.excerpt;
             if (!cleanExcerpt || String(cleanExcerpt) === '[object Object]') {
               cleanExcerpt = stripHtml(item.content).substring(0, 150) + '...';
@@ -214,11 +212,19 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    let resizeTimer;
     const handleResize = () => {
-      setItemsPerPage(window.innerWidth <= 700 ? 1 : 2);
+      // Debounce resize untuk mencegah forced reflow berulang
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        setItemsPerPage(window.innerWidth <= 700 ? 1 : 2);
+      }, 150);
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
   }, []);
 
   const totalPromoPages = Math.ceil(promoData.length / itemsPerPage);
@@ -247,22 +253,30 @@ const Home = () => {
     <div className="home">
 
       {/* ── HERO CAROUSEL ── */}
+      {/* Menggunakan <img> bukan CSS background-image agar browser bisa preload LCP */}
       <section className="hero-section" aria-label="Hero carousel">
-        <style dangerouslySetInnerHTML={{
-          __html: heroSlides.map((slide, i) => `
-            .slide-bg-${i} { background-image: url('${slide.image}'); }
-            @media (max-width: 768px) {
-              .slide-bg-${i} { background-image: url('${slide.imageMobile || slide.image}'); }
-            }
-          `).join('\n')
-        }} />
-
         {heroSlides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`hero-slide slide-bg-${index} ${index === currentSlide ? 'active' : ''}`}
+            className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
             aria-hidden={index !== currentSlide}
           >
+            <picture>
+              <source
+                media="(max-width: 768px)"
+                srcSet={slide.imageMobile || slide.image}
+              />
+              <img
+                src={slide.image}
+                alt={slide.tag}
+                className="hero-bg-img"
+                width="1920"
+                height="1080"
+                loading={index === 0 ? 'eager' : 'lazy'}
+                fetchpriority={index === 0 ? 'high' : 'low'}
+                decoding={index === 0 ? 'sync' : 'async'}
+              />
+            </picture>
             <div className="hero-overlay" />
             <div className="container hero-content">
               <div className="hero-text">
@@ -365,7 +379,14 @@ const Home = () => {
             {/* Card besar: focal point utama section */}
             <div className="featured-card featured-card-large">
               <div className="featured-img-wrap">
-                <img src="/home/project/merch.png" alt="Proyek branding dan identitas visual" />
+                <img
+                  src="/home/project/merch.webp"
+                  alt="Souvenir dan merchandise custom: paper bag, tumbler, mug"
+                  width="800"
+                  height="600"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="featured-overlay">
                   <span className="featured-cat">Merchandise</span>
                   <h3>Souvenir dan Merchandise Custom</h3>
@@ -377,7 +398,14 @@ const Home = () => {
             {/* 2 card kecil */}
             <div className="featured-card featured-card-small">
               <div className="featured-img-wrap">
-                <img src="/home/project/umkm.png" alt="Proyek packaging produk" />
+                <img
+                  src="/home/project/umkm.webp"
+                  alt="Identitas visual dan branding untuk UMKM lokal"
+                  width="600"
+                  height="450"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="featured-overlay">
                   <span className="featured-cat">Branding UMKM</span>
                   <h3>Identitas Visual untuk Brand Lokal</h3>
@@ -388,7 +416,14 @@ const Home = () => {
 
             <div className="featured-card featured-card-small">
               <div className="featured-img-wrap">
-                <img src="/home/project/signage1.png" alt="Proyek signage dan outdoor" />
+                <img
+                  src="/home/project/signage1.webp"
+                  alt="Neon box dan papan nama signage outdoor"
+                  width="600"
+                  height="450"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="featured-overlay">
                   <span className="featured-cat">Signage</span>
                   <h3>Neon Box dan Papan Nama</h3>
@@ -441,7 +476,14 @@ const Home = () => {
               {promoData.map(promo => (
                 <div key={promo.id} className={`promo-card ${promo.bgDark ? 'promo-card-dark' : ''}`}>
                   <div className="promo-img">
-                    <img src={promo.image} alt={promo.title} />
+                    <img
+                      src={promo.image}
+                      alt={promo.title}
+                      width="480"
+                      height="320"
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <span className="promo-badge">{promo.badge}</span>
                   </div>
                   <div className="promo-body">
@@ -526,6 +568,10 @@ const Home = () => {
                     src={article.image}
                     alt={article.title}
                     className="article-image"
+                    width="600"
+                    height="400"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <div className="article-content">
