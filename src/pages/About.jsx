@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import './About.css';
+import SEO from '../components/SEO';
 
 const teamMembers = [
   {
@@ -79,6 +80,11 @@ const About = () => {
 
   return (
     <div className="about-page">
+      <SEO 
+        title="Tentang Kami" 
+        description="Kenali lebih dekat dengan tim dan visi misi Versa Design Studio." 
+        canonicalUrl="/about" 
+      />
 
       {/* ── PAGE HEADER — bukan centered box generik, tapi editorial split ── */}
       <section className="about-header">

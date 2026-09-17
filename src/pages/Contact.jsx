@@ -1,9 +1,15 @@
 import { MapPin, Clock, MessageCircle, ArrowRight } from 'lucide-react';
 import './Contact.css';
+import SEO from '../components/SEO';
 
 const Contact = () => {
   return (
     <div className="page-layout">
+      <SEO 
+        title="Hubungi Kami" 
+        description="Hubungi Versa Design Studio untuk konsultasi proyek Anda." 
+        canonicalUrl="/contact" 
+      />
       {/* Hero Section */}
       <section className="contact-hero">
         <div className="container text-center">

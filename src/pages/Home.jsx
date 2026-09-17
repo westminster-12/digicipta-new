@@ -5,6 +5,7 @@ import {
   Printer, Palette, Package, Megaphone, CheckCircle2
 } from 'lucide-react';
 import './Home.css';
+import SEO from '../components/SEO';
 
 const heroSlides = [
   {
@@ -251,6 +252,11 @@ const Home = () => {
 
   return (
     <div className="home">
+      <SEO 
+        title="Beranda" 
+        description="Versa Design Studio - Jasa Desain Grafis, Printing, dan Signage di Manado." 
+        canonicalUrl="/" 
+      />
 
       {/* ── HERO CAROUSEL ── */}
       {/* Menggunakan <img> bukan CSS background-image agar browser bisa preload LCP */}

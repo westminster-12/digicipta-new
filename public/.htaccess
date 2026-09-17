@@ -1,7 +1,18 @@
-# SPA routing: semua request non-file ke index.html
+# SPA routing dan Redirect 301 WordPress
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # 1. 301 Redirect: Artikel WordPress Lama ke React (/article/slug)
+  # Jangan redirect jika yang diakses adalah file/folder nyata
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  # Jangan redirect jika URL adalah salah satu halaman utama dari web baru kita
+  RewriteCond %{REQUEST_URI} !^/(about|portfolio|article|career|contact|admin)(/.*)?$ [NC]
+  # Jika URL hanya memiliki 1 path (contoh: /cetak-undangan-nikah/), lakukan pengalihan
+  RewriteRule ^([^/]+)/?$ /article/$1 [R=301,L]
+
+  # 2. SPA routing fallback: semua sisa request ke index.html
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

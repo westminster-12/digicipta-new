@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import SEO from '../components/SEO';
 
 const fallbackArticles = [
   {
@@ -157,7 +158,12 @@ const Article = () => {
   };
 
   return (
-    <div className="page-layout">
+    <div className="article-page bg-light min-h-screen">
+      <SEO 
+        title="Artikel & Blog" 
+        description="Berita, tips, dan insight terbaru dari Versa Design Studio." 
+        canonicalUrl="/article" 
+      />
       <div className="page-header bg-gradient-tosca">
         <div className="container text-center">
           <h1 className="text-white">Articles & Insights</h1>

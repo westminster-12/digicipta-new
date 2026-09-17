@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -59,8 +60,9 @@ function PublicLayout() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <HelmetProvider>
+      <AuthProvider>
+        <Router>
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Public Pages */}
@@ -112,6 +114,7 @@ function App() {
         </Suspense>
       </Router>
     </AuthProvider>
+    </HelmetProvider>
   );
 }
 

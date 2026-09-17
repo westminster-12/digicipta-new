@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Tag, Share2, Check, ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import './ArticleDetail.css';
+import SEO from '../components/SEO';
 
 export default function ArticleDetail() {
   const { slug } = useParams();
@@ -101,7 +102,12 @@ export default function ArticleDetail() {
       });
 
   return (
-    <div className="article-detail-page">
+    <div className="article-detail-page bg-light">
+      <SEO 
+        title={article.title} 
+        description={article.excerpt || `Membaca artikel ${article.title} di Versa Design Studio`}
+        canonicalUrl={`/article/${article.slug}`}
+      />
       <div className="article-detail-hero">
         <div className="container">
           <Link to="/article" className="article-detail-nav-back">

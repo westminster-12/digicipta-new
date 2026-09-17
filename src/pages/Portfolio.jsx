@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import './Portfolio.css';
+import SEO from '../components/SEO';
 
 const Portfolio = () => {
   useEffect(() => {
@@ -8,6 +9,11 @@ const Portfolio = () => {
 
   return (
     <div className="page-layout">
+      <SEO 
+        title="Portofolio" 
+        description="Lihat karya-karya terbaik dari Versa Design Studio." 
+        canonicalUrl="/portfolio" 
+      />
       <div className="page-header bg-gradient-tosca">
         <div className="container text-center">
           <h1 className="text-white">Our Portfolio</h1>

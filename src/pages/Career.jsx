@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronDown, ChevronUp, ArrowUpRight } from 'lucide-react';
 import ApplyModal from '../components/ApplyModal';
 import './Career.css';
+import SEO from '../components/SEO';
 
 /* Data posisi tidak diubah */
 const departments = [
@@ -182,6 +183,11 @@ const Career = () => {
 
   return (
     <div className="career-page">
+      <SEO 
+        title="Karir" 
+        description="Bergabunglah dengan tim Versa Design Studio. Temukan peluang karir yang sesuai dengan passion Anda." 
+        canonicalUrl="/career" 
+      />
 
       {/* HERO: editorial typographic */}
       <section className="career-hero">
