@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Search, Image as ImageIcon, Loader2, ZoomIn, X } from 'lucide-react';
 import './Portfolio.css';
 import SEO from '../components/SEO';
 import { supabase } from '../lib/supabase';
@@ -14,6 +14,7 @@ const Portfolio = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Timer for search debounce
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -128,18 +129,11 @@ const Portfolio = () => {
             <>
               <div className="masonry-grid" style={{ opacity: loading ? 0.5 : 1, transition: 'opacity 0.3s' }}>
                 {portfolioData.map((item) => (
-                  <div key={item.id} className="portfolio-item group">
+                  <div key={item.id} className="portfolio-item group" onClick={() => setSelectedImage(item)}>
                     <img src={item.image_url} alt={item.caption ? item.caption.substring(0, 30) : 'Portfolio Versa'} loading="lazy" />
                     <div className="portfolio-overlay">
-                      <div className="portfolio-content">
-                        {item.caption && <p className="caption">{item.caption.substring(0, 80)}...</p>}
-                        {item.ai_tags && (
-                          <div className="tags-container">
-                            {item.ai_tags.split(',').slice(0, 3).map((tag, idx) => (
-                              <span key={idx} className="ai-tag">{tag.trim()}</span>
-                            ))}
-                          </div>
-                        )}
+                      <div className="portfolio-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                        <ZoomIn size={48} color="white" className="opacity-90" />
                       </div>
                     </div>
                   </div>
@@ -170,6 +164,20 @@ const Portfolio = () => {
           )}
         </div>
       </section>
+
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div className="portfolio-lightbox-backdrop" onClick={() => setSelectedImage(null)}>
+          <div className="portfolio-lightbox-modal" onClick={e => e.stopPropagation()}>
+            <button className="portfolio-lightbox-close" onClick={() => setSelectedImage(null)}>
+              <X size={20} />
+            </button>
+            <div className="portfolio-lightbox-gallery">
+              <img src={selectedImage.image_url} alt="Enlarged" className="portfolio-lightbox-main-img" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
