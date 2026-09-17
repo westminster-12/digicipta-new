@@ -6,7 +6,14 @@ const Footer = () => {
     <footer className="footer" id="contact">
       <div className="container footer-grid">
         <div className="footer-brand">
-          <img src="/logo-white-hor.png" alt="Versa Logo" className="logo-img-footer mb-4" style={{ height: '200px', marginBottom: '1px' }} />
+          <img 
+            src="/logo-white-hor.png" 
+            alt="Versa Logo" 
+            className="logo-img-footer mb-4" 
+            width="600" 
+            height="200" 
+            style={{ height: '200px', width: 'auto', marginBottom: '1px' }} 
+          />
           <p className="footer-desc">
             Kualitas, Kepercayaan, dan Kepuasan Pelanggan adalah prioritas utama kami. Kami memberikan solusi terbaik yang lebih dari sekedar produk.
           </p>

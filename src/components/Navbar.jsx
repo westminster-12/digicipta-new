@@ -25,7 +25,9 @@ const Navbar = () => {
             src={isScrolled ? "/LOGOVERSA.png" : "/logo-white-hor.png"}
             alt="Versa Logo"
             className="logo-img"
-            style={{ height: '100px' }}
+            width="300"
+            height="100"
+            style={{ height: '100px', width: 'auto' }}
           />
         </Link>
 
