@@ -105,7 +105,7 @@ const Portfolio = () => {
               <input
                 type="text"
                 className="search-input"
-                placeholder='Coba cari "pernak pernik paskah" atau "desain poster"...'
+                placeholder="Coba cari neon box, undangan, wedding plate..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
