@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.116.0",
     "@tiptap/extension-character-count": "^3.31.3",
     "@tiptap/extension-code-block-lowlight": "^3.31.3",
@@ -28,6 +29,7 @@
     "@tiptap/starter-kit": "^3.31.3",
     "dotenv": "^17.4.2",
     "fast-xml-parser": "^5.11.1",
+    "fuse.js": "^7.5.0",
     "lowlight": "^3.3.0",
     "lucide-react": "^1.38.0",
     "react": "^19.2.8",

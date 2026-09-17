@@ -10,8 +10,8 @@ import SEO from '../components/SEO';
 const heroSlides = [
   {
     id: 1,
-    image: '/hero/hero2.webp',
-    imageMobile: '/hero/hero2mobile.webp',
+    image: '/hero/hero2.jpg',
+    imageMobile: '/hero/hero2mobile.jpg',
     tag: 'Design & Produksi',
     title: 'Dari Ide ke Tangan Pelanggan',
     subtitle: 'Versa menggabungkan desain dan produksi dalam satu tempat. Mulai dari konsep visual hingga hasil cetak siap pakai.',
@@ -21,8 +21,8 @@ const heroSlides = [
   },
   {
     id: 2,
-    image: '/hero/hero3.webp',
-    imageMobile: '/hero/hero3mobile.webp',
+    image: '/hero/hero3.jpg',
+    imageMobile: '/hero/hero3mobile.jpg',
     tag: 'Printing & Signage',
     title: 'Cetak Berkualitas, Tepat Waktu',
     subtitle: 'Banner, neon box, packaging, hingga merchandise. Produksi dengan mesin modern dan tim yang berpengalaman sejak 2018.',
@@ -32,8 +32,8 @@ const heroSlides = [
   },
   {
     id: 3,
-    image: '/hero/hero1.webp',
-    imageMobile: '/hero/hero1mobile.webp',
+    image: '/hero/hero1.jpg',
+    imageMobile: '/hero/hero1mobile.jpg',
     tag: 'Branding & Identitas',
     title: 'Brand yang Kuat Dimulai dari Visual',
     subtitle: 'Kami bantu bisnis Anda tampil konsisten di semua media. Dari logo hingga branding material yang siap digunakan.',
