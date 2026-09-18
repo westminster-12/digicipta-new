@@ -147,10 +147,10 @@ const DeptAccordion = ({ dept, index, onApply }) => {
 };
 
 const heroImages = [
-  '/career/_MG_7052.webp',
-  '/career/_MG_7098.webp',
-  '/career/_MG_7107.webp',
-  '/career/_MG_7138.webp'
+  '/career-assets/_MG_7052.webp',
+  '/career-assets/_MG_7098.webp',
+  '/career-assets/_MG_7107.webp',
+  '/career-assets/_MG_7138.webp'
 ];
 
 const Career = () => {
