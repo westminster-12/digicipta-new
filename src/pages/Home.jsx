@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, ChevronLeft, ChevronRight, ChevronDown,
-  Printer, Palette, Package, Megaphone, CheckCircle2
+  Printer, Palette, Package, Megaphone, CheckCircle2,
+  Presentation, Gift, PartyPopper, Briefcase, BookOpen, Target
 } from 'lucide-react';
 import './Home.css';
 import SEO from '../components/SEO';
@@ -89,30 +90,58 @@ const promoData = [
 const services = [
   {
     id: 1,
-    icon: <Palette size={28} />,
-    title: 'Desain & Branding',
-    desc: 'Logo, identitas visual, dan panduan brand yang membantu bisnis Anda tampil konsisten di semua media.',
+    icon: <Presentation size={22} />,
+    title: 'Sign & Display',
+    desc: 'Print yang menggunakan bahan vinyl atau kain untuk menciptakan display menarik seperti backdrop, spanduk, sticker dan banner. Kualitas cetakan yang tinggi menjadikannya pilihan ideal untuk menarik perhatian konsumen.',
     link: '/portfolio',
   },
   {
     id: 2,
-    icon: <Printer size={28} />,
-    title: 'Printing & Produksi',
-    desc: 'Banner, baliho, kemasan, undangan, hingga company profile. Dicetak dengan mesin modern dan finishing rapi.',
+    icon: <Gift size={22} />,
+    title: 'Souvenir & Merchandise',
+    desc: 'Souvenir dan merchandise, seperti kaos, tumbler, dan mug, berfungsi sebagai alat promosi yang efektif. Desain menarik dan personalisasi dapat meninggalkan kesan mendalam bagi penerimanya.',
     link: '/portfolio',
   },
   {
     id: 3,
-    icon: <Megaphone size={28} />,
-    title: 'Signage & Outdoor',
-    desc: 'Neon box, letter timbul, acrylic display, dan media promosi luar ruang yang menarik perhatian.',
+    icon: <PartyPopper size={22} />,
+    title: 'Event & Decoration',
+    desc: 'Momen spesial seperti pernikahan dan ulang tahun memerlukan undangan dan dekorasi yang unik. Elemen seperti backdrop dan photobooth dapat menciptakan suasana tak terlupakan bagi para tamu.',
     link: '/portfolio',
   },
   {
     id: 4,
-    icon: <Package size={28} />,
-    title: 'Event & Merchandise',
-    desc: 'Perlengkapan event dari A ke Z: backdrop, ID card, kaos, totebag, dan souvenir kustom untuk tim atau klien.',
+    icon: <Package size={22} />,
+    title: 'Label & Packaging',
+    desc: 'Kemasan yang menarik dan informatif penting untuk menarik perhatian konsumen. Label dan stiker untuk produk makanan berfungsi sebagai pelindung dan media komunikasi yang efektif.',
+    link: '/portfolio',
+  },
+  {
+    id: 5,
+    icon: <Briefcase size={22} />,
+    title: 'Office & Stationery',
+    desc: 'Produk seperti Id Card, kartu nama, dan lanyard menciptakan citra profesional. Desain yang konsisten dapat meningkatkan kredibilitas di mata klien dan mitra bisnis.',
+    link: '/portfolio',
+  },
+  {
+    id: 6,
+    icon: <Megaphone size={22} />,
+    title: 'Branding & Promotion',
+    desc: 'Digital print efektif untuk mencetak katalog, flyer, dan brosur. Metode ini memungkinkan perusahaan beradaptasi cepat dengan kebutuhan pasar dan menciptakan materi promosi menarik.',
+    link: '/portfolio',
+  },
+  {
+    id: 7,
+    icon: <BookOpen size={22} />,
+    title: 'Book & Calendar',
+    desc: 'Buku cetak, majalah, dan kalender berfungsi sebagai media informasi dan alat promosi. Desain menarik dan konten berkualitas meningkatkan engagement dengan audiens.',
+    link: '/portfolio',
+  },
+  {
+    id: 8,
+    icon: <Target size={28} />,
+    title: 'Rigid & Advertising',
+    desc: 'Metode printing & cutting yang menciptakan papan reklame, neonbox, signboard, lettersign, acrylic sign hingga branding wallpaper sticker yang mencolok. Spesifikasi dengan kualitas tinggi menjadikannya pilihan utama untuk meningkatkan visibilitas merek.',
     link: '/portfolio',
   },
 ];
@@ -359,14 +388,11 @@ const Home = () => {
 
           <div className="services-grid">
             {services.map((svc) => (
-              <Link key={svc.id} to={svc.link} className="service-card">
+              <div key={svc.id} className="service-card">
                 <div className="service-icon">{svc.icon}</div>
                 <h3>{svc.title}</h3>
                 <p>{svc.desc}</p>
-                <span className="service-link">
-                  Lihat karya <ArrowRight size={16} />
-                </span>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

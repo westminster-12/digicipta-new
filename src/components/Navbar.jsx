@@ -33,7 +33,7 @@ const Navbar = () => {
 
         <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
           <Link to="/" onClick={toggleMenu}>Home</Link>
-          <Link to="/about" onClick={toggleMenu}>About Us</Link>
+          <Link to="/about-us" onClick={toggleMenu}>About Us</Link>
           <Link to="/portfolio" onClick={toggleMenu}>Portfolio</Link>
           <Link to="/article" onClick={toggleMenu}>Article</Link>
           <Link to="/career" onClick={toggleMenu}>Career</Link>

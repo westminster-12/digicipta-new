@@ -68,7 +68,7 @@ function App() {
             {/* Public Pages */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
+              <Route path="/about-us" element={<About />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/article" element={<Article />} />
               <Route path="/article/:slug" element={<ArticleDetail />} />

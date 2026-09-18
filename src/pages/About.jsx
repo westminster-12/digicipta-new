@@ -8,37 +8,37 @@ const teamMembers = [
   {
     name: 'Kevin Liemmunandar',
     role: 'CEO',
-    img: 'about-us/foto-id/kevin.png',
+    img: 'about-us-assets/foto-id/kevin.png',
   },
   {
     name: 'Meylisa Imelda',
     role: 'General Manager',
-    img: 'about-us/foto-id/meylisa.png',
+    img: 'about-us-assets/foto-id/meylisa.png',
   },
   {
     name: 'Vony W Kalo',
     role: 'HRGA',
-    img: 'about-us/foto-id/vony.png',
+    img: 'about-us-assets/foto-id/vony.png',
   },
   {
     name: 'Anastazia Warouw',
     role: 'SPV Production',
-    img: 'about-us/foto-id/anastasia.png',
+    img: 'about-us-assets/foto-id/anastasia.png',
   },
   {
     name: 'Dalton Sebastian',
     role: 'SPV Operational',
-    img: 'about-us/foto-id/dalton.png',
+    img: 'about-us-assets/foto-id/dalton.png',
   },
   {
     name: 'Fernando Senewe',
     role: 'Lead Graphic Designer',
-    img: 'about-us/foto-id/nando.png',
+    img: 'about-us-assets/foto-id/nando.png',
   },
   {
     name: 'Debora Runtuwene',
-    role: 'Sales Coordinator',
-    img: 'about-us/foto-id/debora.png',
+    role: 'Product Coordinator',
+    img: 'about-us-assets/foto-id/debora.png',
   },
 ];
 
@@ -80,10 +80,10 @@ const About = () => {
 
   return (
     <div className="about-page">
-      <SEO 
-        title="Tentang Kami" 
-        description="Kenali lebih dekat dengan tim dan visi misi Versa Design Studio." 
-        canonicalUrl="/about" 
+      <SEO
+        title="Tentang Kami"
+        description="Kenali lebih dekat dengan tim dan visi misi Versa Design Studio."
+        canonicalUrl="/about-us"
       />
 
       {/* ── PAGE HEADER — bukan centered box generik, tapi editorial split ── */}
@@ -99,7 +99,7 @@ const About = () => {
           </div>
           <div className="about-header-image">
             <img
-              src="about-us/intro.webp"
+              src="about-us-assets/intro.webp"
               alt="Tim Versa Design Studio di kantor"
             />
           </div>
@@ -159,6 +159,50 @@ const About = () => {
                   <p>Klien bisa pantau status order dan akses promo langsung dari HP.</p>
                 </div>
               </div>
+              <div className="timeline-item">
+                <div className="timeline-year">2026</div>
+                <div className="timeline-content">
+                  <h4>Bikin.in go to public</h4>
+                  <p>Platform cerdas desain dan cetak mandiri resmi diluncurkan untuk masyarakat luas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* ── BIKIN.IN PLATFORM — Tech-focused layout ── */}
+      <section className="section bikinin-section">
+        <div className="container">
+          <div className="bikinin-layout">
+            <div className="bikinin-text">
+              <span className="section-label">Inovasi Teknologi</span>
+              <img src="/logo bikin.in-02.png" alt="Bikin.in" className="bikinin-logo" />
+              <p className="bikinin-lead">
+                Dari alat internal studio hingga menjadi platform desain &amp; cetak cerdas untuk publik.
+              </p>
+              <p>
+                Bikin.in hadir untuk menghapus kebingungan orang yang tidak tahu harus mulai dari mana saat ingin membuat desain. Tidak perlu paham software desain, cukup sampaikan kebutuhan Anda, dan sistem cerdas kami akan memberikan karya siap cetak yang paling sesuai.
+              </p>
+              <a href="https://bikin.in" target="_blank" rel="noreferrer" className="btn btn-accent mt-4">
+                Kunjungi Bikin.in <ArrowRight size={16} />
+              </a>
+            </div>
+            
+            <div className="bikinin-visual">
+              <div className="bikinin-card">
+                <div className="bikinin-card-header">
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                </div>
+                <div className="bikinin-card-body">
+                  <h3>Membangun masa depan di mana bahkan orang awam pun bisa menciptakan.</h3>
+                  <div className="bikinin-search-mock">
+                    <span>Mau bikin apa hari ini?</span>
+                    <div className="search-btn"><ArrowRight size={14} /></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -169,7 +213,7 @@ const About = () => {
       <section className="vismis-section">
         <div className="vismis-image-col">
           <img
-            src="/about-us/AST_3020.webp"
+            src="/about-us-assets/AST_3020.webp"
             alt="Tim Versa sedang bekerja di studio"
           />
           {/* <div className="vismis-image-label">
@@ -181,7 +225,7 @@ const About = () => {
           <div className="vismis-block">
             <span className="section-label section-label-light">Visi</span>
             <h2 className="text-white">
-              Kami membantu orang dengan memberikan solusi desain dan printing berdasarkan kebutuhan bisnis maupun tujuan personal mereka
+              Menjadi panggung terdepan yang selalu tanpa batas melakukan inovasi terhadap segala aspek desain & printing bagi masyarakat luas
             </h2>
             <p>
               Visi Versa adalah memastikan setiap bisnis, di manapun mereka berada, bisa mendapatkan kualitas desain dan produksi yang layak.
@@ -203,6 +247,7 @@ const About = () => {
           </div>
         </div>
       </section>
+
 
 
       {/* ── VALUES — horizontal strip, bukan card grid ── */}

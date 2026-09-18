@@ -8,7 +8,7 @@
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   # Jangan redirect jika URL adalah salah satu halaman utama dari web baru kita
-  RewriteCond %{REQUEST_URI} !^/(about|portfolio|article|career|contact|admin)(/.*)?$ [NC]
+  RewriteCond %{REQUEST_URI} !^/(about-us|portfolio|article|career|contact|admin)(/.*)?$ [NC]
   # Jika URL hanya memiliki 1 path (contoh: /cetak-undangan-nikah/), lakukan pengalihan
   RewriteRule ^([^/]+)/?$ /article/$1 [R=301,L]
 

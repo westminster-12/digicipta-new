@@ -381,7 +381,7 @@ const Career = () => {
               >
                 Kirim Lamaran Terbuka
               </button>
-              <Link to="/about" className="career-cta-link">
+              <Link to="/about-us" className="career-cta-link">
                 Kenali tim kami <ArrowRight size={15} />
               </Link>
             </div>
