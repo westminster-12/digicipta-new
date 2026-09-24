@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, ChevronDown, ChevronUp, ArrowUpRight } from 'lucide-react';
 import ApplyModal from '../components/ApplyModal';
 import './Career.css';
@@ -157,6 +157,7 @@ const Career = () => {
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState('');
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
@@ -178,8 +179,19 @@ const Career = () => {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (!location.hash && !location.search.includes('apply=')) {
+      window.scrollTo(0, 0);
+    }
+    
+    const query = new URLSearchParams(location.search);
+    if (query.get('apply') === 'tahuna') {
+      setSelectedPosition('Staff Design & Printing - Tahuna');
+      setIsApplyModalOpen(true);
+      setTimeout(() => {
+        document.getElementById('lowongan')?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    }
+  }, [location]);
 
   return (
     <div className="career-page">
