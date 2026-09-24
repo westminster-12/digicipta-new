@@ -349,6 +349,24 @@ const Career = () => {
             </p> */}
           </div>
 
+          <div className="special-job-listing">
+            <div className="special-job-info">
+              <div className="special-job-meta">
+                <span className="special-job-badge">Hiring</span>
+                <span className="special-job-location">Penempatan: Tahuna</span>
+              </div>
+              <h3 className="special-job-title">Staff Design & Printing</h3>
+              <p className="special-job-desc">Menangani desain grafis, persiapan cetak, dan operasional mesin printing di cabang Tahuna.</p>
+            </div>
+            <button
+              type="button"
+              className="btn btn-accent"
+              onClick={() => handleOpenApply('Staff Design & Printing - Tahuna')}
+            >
+              Lamar Sekarang <ArrowRight size={16} />
+            </button>
+          </div>
+
           <div className="departments-list">
             {departments.map((dept, idx) => (
               <DeptAccordion
