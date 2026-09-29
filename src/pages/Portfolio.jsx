@@ -15,6 +15,8 @@ const Portfolio = () => {
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedPostImages, setSelectedPostImages] = useState([]);
+  const [lightboxLoading, setLightboxLoading] = useState(false);
 
   // Timer for search debounce
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -46,6 +48,7 @@ const Portfolio = () => {
       let query = supabase
         .from('facebook_portfolios')
         .select('*', { count: 'exact' })
+        .like('id', '%-main')
         .order('created_time', { ascending: false })
         .range(from, to);
 
@@ -85,6 +88,40 @@ const Portfolio = () => {
     if (!loadingMore && hasMore) {
       fetchPortfolio(true);
     }
+  };
+
+  const openLightbox = async (item) => {
+    setSelectedImage(item);
+    setLightboxLoading(true);
+    const postId = item.id.split('-main')[0];
+    
+    try {
+      const { data, error } = await supabase
+        .from('facebook_portfolios')
+        .select('*')
+        .like('id', `${postId}%`)
+        .order('id', { ascending: true });
+        
+      if (error) throw error;
+      
+      // Filter out duplicate image URLs (since -main and -sub-0 might be the same)
+      if (data) {
+        const uniqueImages = Array.from(new Map(data.map(img => [img.image_url, img])).values());
+        setSelectedPostImages(uniqueImages);
+      } else {
+        setSelectedPostImages([item]);
+      }
+    } catch (err) {
+      console.error("Error fetching sub-images:", err);
+      setSelectedPostImages([item]);
+    } finally {
+      setLightboxLoading(false);
+    }
+  };
+
+  const closeLightbox = () => {
+    setSelectedImage(null);
+    setSelectedPostImages([]);
   };
 
   return (
@@ -129,7 +166,7 @@ const Portfolio = () => {
             <>
               <div className="masonry-grid" style={{ opacity: loading ? 0.5 : 1, transition: 'opacity 0.3s' }}>
                 {portfolioData.map((item) => (
-                  <div key={item.id} className="portfolio-item group" onClick={() => setSelectedImage(item)}>
+                  <div key={item.id} className="portfolio-item group" onClick={() => openLightbox(item)}>
                     <img src={item.image_url} alt={item.caption ? item.caption.substring(0, 30) : 'Portfolio Versa'} loading="lazy" />
                     <div className="portfolio-overlay">
                       <div className="portfolio-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
@@ -167,13 +204,21 @@ const Portfolio = () => {
 
       {/* Lightbox Modal */}
       {selectedImage && (
-        <div className="portfolio-lightbox-backdrop" onClick={() => setSelectedImage(null)}>
-          <div className="portfolio-lightbox-modal" onClick={e => e.stopPropagation()}>
-            <button className="portfolio-lightbox-close" onClick={() => setSelectedImage(null)}>
+        <div className="portfolio-lightbox-backdrop" onClick={closeLightbox}>
+          <div className="portfolio-lightbox-modal" onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <button className="portfolio-lightbox-close" onClick={closeLightbox}>
               <X size={20} />
             </button>
-            <div className="portfolio-lightbox-gallery">
-              <img src={selectedImage.image_url} alt="Enlarged" className="portfolio-lightbox-main-img" />
+            <div className="portfolio-lightbox-gallery" style={{ display: 'flex', overflowX: 'auto', gap: '1rem', padding: '1rem', width: '100%', justifyContent: selectedPostImages.length === 1 ? 'center' : 'flex-start', alignItems: 'center' }}>
+              {lightboxLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '3rem' }}>
+                  <Loader2 size={48} className="spin-animation text-white" />
+                </div>
+              ) : (
+                selectedPostImages.map(img => (
+                  <img key={img.id} src={img.image_url} alt="Portfolio" style={{ maxHeight: '75vh', maxWidth: '90vw', objectFit: 'contain', flexShrink: 0, borderRadius: '8px' }} />
+                ))
+              )}
             </div>
           </div>
         </div>

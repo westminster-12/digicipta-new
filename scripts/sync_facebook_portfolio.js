@@ -60,6 +60,82 @@ async function fetchFacebookPosts() {
   return allPosts;
 }
 
+const BUCKET_NAME = 'images';
+
+async function uploadImageToStorage(imageUrl, id) {
+  try {
+    const filename = `portfolio/${id}.jpg`;
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+    
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    const { data, error } = await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(filename, buffer, {
+        contentType: 'image/jpeg',
+        upsert: true
+      });
+      
+    if (error) throw error;
+    
+    const { data: publicUrlData } = supabase.storage
+      .from(BUCKET_NAME)
+      .getPublicUrl(filename);
+      
+    return publicUrlData.publicUrl;
+  } catch (error) {
+    console.error(`\nError uploading image ${id}:`, error.message);
+    return null;
+  }
+}
+
+async function processAndUploadImages(items) {
+  console.log(`Checking existing images in database to skip re-uploading...`);
+  // Fetch only necessary fields to save memory
+  const { data: existingItems, error } = await supabase.from('facebook_portfolios').select('id, image_url');
+  
+  if (error) {
+    console.warn(`Could not fetch existing items:`, error.message);
+  }
+  
+  const existingMap = new Map(existingItems?.map(item => [item.id, item.image_url]) || []);
+
+  console.log(`Processing and uploading images to Supabase Storage...`);
+  const processedItems = [];
+  const BATCH_SIZE = 10;
+  
+  for (let i = 0; i < items.length; i += BATCH_SIZE) {
+    const batch = items.slice(i, i + BATCH_SIZE);
+    process.stdout.write(`\rUploading batch ${Math.floor(i / BATCH_SIZE) + 1} of ${Math.ceil(items.length / BATCH_SIZE)}...`);
+    
+    const uploadPromises = batch.map(async (item) => {
+      const existingUrl = existingMap.get(item.id);
+      
+      // If it already exists and is a supabase storage URL, skip uploading
+      if (existingUrl && existingUrl.includes('supabase.co')) {
+        return { ...item, image_url: existingUrl };
+      }
+      
+      const permalink = await uploadImageToStorage(item.image_url, item.id);
+      if (permalink) {
+        return { ...item, image_url: permalink };
+      }
+      return null;
+    });
+    
+    const results = await Promise.all(uploadPromises);
+    const successfulItems = results.filter(Boolean);
+    processedItems.push(...successfulItems);
+    
+    // Optional delay to avoid hitting rate limits
+    await delay(500); 
+  }
+  console.log(`\n✅ Finished uploading images.`);
+  return processedItems;
+}
+
 async function extractImagesFromPosts(posts) {
   const portfolioItems = [];
 
@@ -81,17 +157,17 @@ async function extractImagesFromPosts(posts) {
 
       // Multiple images in one post (carousel/album)
       if (attachment.subattachments?.data) {
-        for (const sub of attachment.subattachments.data) {
+        attachment.subattachments.data.forEach((sub, index) => {
           if (sub.media?.image?.src) {
             portfolioItems.push({
-              id: `${post.id}-${sub.media.image.src.substring(sub.media.image.src.length - 10)}`, // rudimentary unique id
+              id: `${post.id}-sub-${index}`, // use index to ensure stable ID
               image_url: sub.media.image.src,
               caption: message,
               created_time: post.created_time,
               ai_tags: ''
             });
           }
-        }
+        });
       }
     }
   }
@@ -135,10 +211,14 @@ async function main() {
     // Filter out items without images just in case
     portfolioItems = portfolioItems.filter(item => item.image_url);
 
-    // 3. Generate AI Tags (TEMPORARILY SKIPPED)
+    // 3. Upload images to Supabase Storage to get permanent URLs (SKIPPED)
+    console.log("⚠️ Image uploading to Supabase Storage is skipped per user request. Using original Facebook URLs.");
+    // portfolioItems = await processAndUploadImages(portfolioItems);
+
+    // 4. Generate AI Tags (TEMPORARILY SKIPPED)
     console.log("⚠️ AI Tagging is temporarily skipped per user request. Using original captions only.");
 
-    // 4. Save to Supabase Database
+    // 5. Save to Supabase Database
     if (portfolioItems.length > 0) {
         await saveToSupabase(portfolioItems);
     } else {

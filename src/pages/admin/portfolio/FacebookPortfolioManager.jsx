@@ -13,6 +13,7 @@ export default function FacebookPortfolioManager() {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [sortOrder, setSortOrder] = useState('desc'); // 'desc' or 'asc'
   
   // Selection state
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -41,7 +42,8 @@ export default function FacebookPortfolioManager() {
         let query = supabase
             .from('facebook_portfolios')
             .select('*', { count: 'exact' })
-            .order('created_time', { ascending: false })
+            .like('id', '%-main')
+            .order('created_time', { ascending: sortOrder === 'asc' })
             .range(from, to);
 
         if (debouncedSearch.trim()) {
@@ -68,12 +70,12 @@ export default function FacebookPortfolioManager() {
         setLoading(false);
         setLoadingMore(false);
     }
-  }, [debouncedSearch, page]);
+  }, [debouncedSearch, page, sortOrder]);
 
   useEffect(() => {
       fetchPortfolio(false);
       setSelectedIds(new Set()); // Reset selection on search change
-  }, [debouncedSearch]);
+  }, [debouncedSearch, sortOrder]);
 
   const handleLoadMore = () => {
       if (!loadingMore && hasMore) {
@@ -103,26 +105,27 @@ export default function FacebookPortfolioManager() {
 
   const deleteSelected = async () => {
       if (selectedIds.size === 0) return;
-      if (!confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} foto terpilih? (Tindakan ini tidak dapat dibatalkan)`)) return;
+      if (!confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.size} postingan terpilih? (Tindakan ini tidak dapat dibatalkan)`)) return;
 
       setIsDeleting(true);
       try {
           const idsToDelete = Array.from(selectedIds);
-          const { error } = await supabase
-            .from('facebook_portfolios')
-            .delete()
-            .in('id', idsToDelete);
-
-          if (error) throw error;
+          const prefixes = idsToDelete.map(id => id.split('-main')[0]);
+          
+          const deletePromises = prefixes.map(prefix => 
+              supabase.from('facebook_portfolios').delete().like('id', `${prefix}%`)
+          );
+          
+          await Promise.all(deletePromises);
 
           // Remove from local state
           setItems(prev => prev.filter(item => !selectedIds.has(item.id)));
           setTotalCount(prev => Math.max(0, prev - selectedIds.size));
           setSelectedIds(new Set());
-          alert('Foto berhasil dihapus.');
+          alert('Postingan berhasil dihapus.');
       } catch (err) {
           console.error("Error deleting items:", err);
-          alert('Gagal menghapus foto. Pastikan Admin RLS Policy sudah dijalankan.');
+          alert('Gagal menghapus postingan. Pastikan Admin RLS Policy sudah dijalankan.');
       } finally {
           setIsDeleting(false);
       }
@@ -132,19 +135,27 @@ export default function FacebookPortfolioManager() {
     <div>
       {/* Controls */}
       <div className="adm-card" style={{ padding: '0.875rem 1.25rem', marginBottom: '1.25rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: 1 }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: 1, flexWrap: 'wrap' }}>
             <div style={{ position: 'relative', flex: '1', minWidth: '180px', maxWidth: '400px' }}>
                 <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                 <input
                     type="text"
-                    placeholder="Cari foto dari Facebook..."
+                    placeholder="Cari postingan dari Facebook..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     style={{ width: '100%', paddingLeft: '2.25rem', paddingRight: '0.875rem', paddingTop: '0.5rem', paddingBottom: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '0.875rem', fontFamily: 'inherit', outline: 'none' }}
                 />
             </div>
+            <select
+                value={sortOrder}
+                onChange={e => setSortOrder(e.target.value)}
+                style={{ padding: '0.5rem 0.875rem', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '0.875rem', fontFamily: 'inherit', outline: 'none', background: 'white', color: '#475569', cursor: 'pointer' }}
+            >
+                <option value="desc">Terbaru ke Terlama</option>
+                <option value="asc">Terlama ke Terbaru</option>
+            </select>
             <span style={{ fontSize: '0.875rem', color: '#64748b' }}>
-                Total: <strong>{totalCount}</strong> foto
+                Total: <strong>{totalCount}</strong> postingan
             </span>
         </div>
 
