@@ -745,4 +745,8 @@
   .bikinin-text .btn {
     margin: 0 auto;
   }
+  .bikinin-logo {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
