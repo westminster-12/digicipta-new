@@ -107,6 +107,60 @@ const Contact = () => {
           </div>
         </div>
       </section>
+
+      {/* Career / Job Application Section */}
+      <section className="section career-section bg-light">
+        <div className="container">
+          <div className="career-wrapper">
+            <div className="text-center mb-5">
+              <h2 className="location-title">Tertarik Bergabung dengan Kami?</h2>
+              <p className="hero-subtitle mb-4">
+                Isi formulir di bawah ini atau kirimkan lamaran dan portofolio Anda secara manual melalui email.
+              </p>
+              <a
+                href="mailto:versads.office@gmail.com?subject=Lamaran%20Pekerjaan%20-%20[Nama%20Anda]&body=Halo%20Versa%20Design%20Studio,%0A%0ABerikut%20adalah%20lamaran%20dan%20portofolio%20saya.%0A%0ATerima%20kasih."
+                className="btn btn-outline-primary"
+              >
+                <MessageCircle size={20} className="mr-2" />
+                Kirim Lamaran via Email (Manual)
+              </a>
+            </div>
+
+            <div className="form-card glass-card">
+              <h3 className="mb-4">Formulir Lamaran</h3>
+              <form className="contact-form" onSubmit={(e) => {
+                e.preventDefault();
+                alert('Fungsi kirim form sedang dipersiapkan. Untuk saat ini, silakan gunakan tombol Kirim Manual di atas.');
+              }}>
+                <div className="form-group">
+                  <label>Nama Lengkap</label>
+                  <input type="text" placeholder="Masukkan nama lengkap Anda" required />
+                </div>
+                <div className="form-group">
+                  <label>Email Anda</label>
+                  <input type="email" placeholder="Masukkan email Anda" required />
+                </div>
+                <div className="form-group">
+                  <label>Posisi yang Dilamar</label>
+                  <input type="text" placeholder="Contoh: Graphic Designer" required />
+                </div>
+                <div className="form-group">
+                  <label>Link Portofolio (Google Drive / Behance)</label>
+                  <input type="url" placeholder="https://" required />
+                </div>
+                <div className="form-group">
+                  <label>Pesan / Cover Letter</label>
+                  <textarea rows="4" placeholder="Tuliskan pesan singkat mengapa Anda cocok untuk posisi ini..." required></textarea>
+                </div>
+                <button type="submit" className="btn btn-primary w-full justify-center">
+                  Kirim Lamaran Sekarang
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
