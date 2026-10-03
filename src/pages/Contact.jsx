@@ -1,8 +1,42 @@
-import { MapPin, Clock, MessageCircle, ArrowRight } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { MapPin, Clock, MessageCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import './Contact.css';
 import SEO from '../components/SEO';
 
 const Contact = () => {
+  const form = useRef();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg('');
+
+    emailjs
+      .sendForm(
+        'service_mvapqym', 
+        'template_86o0frf', 
+        form.current, 
+        'AndkbaY0R0IPsiO7o'
+      )
+      .then(
+        (result) => {
+          setIsSubmitting(false);
+          setIsSuccess(true);
+          form.current.reset();
+          setTimeout(() => setIsSuccess(false), 5000);
+        },
+        (error) => {
+          setIsSubmitting(false);
+          setErrorMsg('Gagal mengirim lamaran. Silakan coba lagi atau gunakan tombol manual.');
+          console.log(error.text);
+        }
+      );
+  };
+
   return (
     <div className="page-layout">
       <SEO
@@ -109,7 +143,7 @@ const Contact = () => {
       </section>
 
       {/* Career / Job Application Section */}
-      <section className="section career-section bg-light">
+      <section className="section career-section bg-light" style={{paddingTop: '0'}}>
         <div className="container">
           <div className="career-wrapper">
             <div className="text-center mb-5">
@@ -126,34 +160,45 @@ const Contact = () => {
               </a>
             </div>
 
-            <div className="form-card glass-card">
+            <div className="form-card glass-card" style={{maxWidth: '700px', margin: '0 auto'}}>
               <h3 className="mb-4">Formulir Lamaran</h3>
-              <form className="contact-form" onSubmit={(e) => {
-                e.preventDefault();
-                alert('Fungsi kirim form sedang dipersiapkan. Untuk saat ini, silakan gunakan tombol Kirim Manual di atas.');
-              }}>
+              
+              {isSuccess && (
+                <div className="success-alert" style={{backgroundColor: '#e6f4ea', color: '#137333', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px'}}>
+                  <CheckCircle2 size={24} />
+                  <span>Lamaran Anda berhasil dikirim! Kami akan segera menghubungi Anda jika memenuhi kualifikasi.</span>
+                </div>
+              )}
+              
+              {errorMsg && (
+                <div className="error-alert" style={{backgroundColor: '#fce8e6', color: '#c5221f', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem'}}>
+                  {errorMsg}
+                </div>
+              )}
+
+              <form ref={form} className="contact-form" onSubmit={sendEmail}>
                 <div className="form-group">
                   <label>Nama Lengkap</label>
-                  <input type="text" placeholder="Masukkan nama lengkap Anda" required />
+                  <input type="text" name="user_name" placeholder="Masukkan nama lengkap Anda" required disabled={isSubmitting} />
                 </div>
                 <div className="form-group">
                   <label>Email Anda</label>
-                  <input type="email" placeholder="Masukkan email Anda" required />
+                  <input type="email" name="user_email" placeholder="Masukkan email Anda" required disabled={isSubmitting} />
                 </div>
                 <div className="form-group">
                   <label>Posisi yang Dilamar</label>
-                  <input type="text" placeholder="Contoh: Graphic Designer" required />
+                  <input type="text" name="position" placeholder="Contoh: Graphic Designer" required disabled={isSubmitting} />
                 </div>
                 <div className="form-group">
                   <label>Link Portofolio (Google Drive / Behance)</label>
-                  <input type="url" placeholder="https://" required />
+                  <input type="url" name="portfolio_link" placeholder="https://" required disabled={isSubmitting} />
                 </div>
                 <div className="form-group">
                   <label>Pesan / Cover Letter</label>
-                  <textarea rows="4" placeholder="Tuliskan pesan singkat mengapa Anda cocok untuk posisi ini..." required></textarea>
+                  <textarea rows="4" name="message" placeholder="Tuliskan pesan singkat mengapa Anda cocok untuk posisi ini..." required disabled={isSubmitting}></textarea>
                 </div>
-                <button type="submit" className="btn btn-primary w-full justify-center">
-                  Kirim Lamaran Sekarang
+                <button type="submit" className="btn btn-primary w-full justify-center" disabled={isSubmitting}>
+                  {isSubmitting ? 'Mengirim...' : 'Kirim Lamaran Sekarang'}
                 </button>
               </form>
             </div>
