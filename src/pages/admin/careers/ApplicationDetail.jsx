@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, FileText, Phone, Mail, Calendar } from 'lucide-react';
+import { ArrowLeft, ExternalLink, FileText, Phone, Mail, Calendar, Send } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
+import emailjs from '@emailjs/browser';
 import '../../../components/admin/AdminLayout.css';
 
 const STATUS_LABELS = { new: 'Baru', reviewed: 'Direview', shortlisted: 'Shortlist', rejected: 'Ditolak' };
@@ -16,6 +17,7 @@ export default function ApplicationDetail() {
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
+  const [forwarding, setForwarding] = useState(false);
 
   useEffect(() => { fetchApp(); }, [id]);
 
@@ -47,6 +49,37 @@ export default function ApplicationDetail() {
     await supabase.from('job_applications').update({ admin_notes: notes }).eq('id', id);
     setSaving(false);
   }
+
+  const handleForwardToEmail = () => {
+    if (!window.confirm('Kirim lamaran ini ke versads.office@gmail.com?')) return;
+    
+    setForwarding(true);
+    
+    const templateParams = {
+      user_name: app.full_name,
+      user_email: app.email,
+      position: app.position,
+      portfolio_link: app.portfolio_url || 'Tidak ada link portofolio',
+      message: app.why_versa || 'Tidak ada pesan'
+    };
+
+    emailjs.send(
+      'service_mvapqym',
+      'template_86o0frf',
+      templateParams,
+      'AndkbaY0R0IPsiO7o'
+    ).then(
+      (response) => {
+        setForwarding(false);
+        alert('Berhasil di-forward ke email!');
+      },
+      (error) => {
+        setForwarding(false);
+        alert('Gagal forward ke email. Cek konsol untuk detail.');
+        console.log('FAILED...', error);
+      }
+    );
+  };
 
   if (loading) return <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>Memuat...</div>;
   if (!app) return <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>Lamaran tidak ditemukan.</div>;
@@ -189,6 +222,37 @@ export default function ApplicationDetail() {
 
         {/* Right */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          
+          {/* Action: Forward to Email */}
+          <div className="adm-card" style={{ padding: '1.25rem', border: '1px solid #e0e7ff', background: '#f8fafc' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: '700', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.75rem' }}>Tindakan</p>
+            <button 
+              onClick={handleForwardToEmail} 
+              disabled={forwarding}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                padding: '0.625rem',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: forwarding ? 'not-allowed' : 'pointer',
+                opacity: forwarding ? 0.7 : 1,
+              }}
+            >
+              <Send size={15} />
+              {forwarding ? 'Mengirim...' : 'Kirim ke Email'}
+            </button>
+            <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem', textAlign: 'center' }}>
+              Teruskan lamaran ini ke versads.office@gmail.com
+            </p>
+          </div>
+
           <div className="adm-card" style={{ padding: '1.25rem' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '1rem' }}>Update Status</p>
             {Object.entries(STATUS_LABELS).map(([val, label]) => (
