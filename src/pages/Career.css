@@ -372,7 +372,7 @@
 
 .culture-list-item {
   display: grid;
-  grid-template-columns: 4.5rem 1fr;
+  grid-template-columns: 5.5rem 1fr;
   gap: 1rem;
   padding: 1.1rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -390,7 +390,6 @@
   color: var(--color-accent);
   line-height: 1.2;
   letter-spacing: -0.02em;
-  word-break: break-all;
 }
 
 .culture-letter-dark {
