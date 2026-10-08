@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import useSWR from 'swr';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, ChevronLeft, ChevronRight, ChevronDown,
@@ -182,64 +183,58 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [promoPage, setPromoPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(typeof window !== 'undefined' && window.innerWidth <= 700 ? 1 : 2);
-  const [homeArticles, setHomeArticles] = useState([]);
+  const fetchHomeArticles = async () => {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('id, title, slug, excerpt, content, cover_image, category, published_at, created_at')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .limit(3);
 
-  useEffect(() => {
-    async function fetchHomeArticles() {
-      try {
-        // Langsung ambil 3 artikel saja — tidak perlu fetch 50 lalu shuffle di client
-        const { data, error } = await supabase
-          .from('articles')
-          .select('id, title, slug, excerpt, content, cover_image, category, published_at, created_at')
-          .eq('status', 'published')
-          .order('published_at', { ascending: false })
-          .limit(3);
+    if (error) throw error;
+    if (!data) return [];
 
-        if (!error && data && data.length > 0) {
-          const mapped = data.map((item) => {
-            let cleanExcerpt = item.excerpt;
-            if (!cleanExcerpt || String(cleanExcerpt) === '[object Object]') {
-              cleanExcerpt = stripHtml(item.content).substring(0, 150) + '...';
-            } else {
-               if (typeof cleanExcerpt === 'string' && cleanExcerpt.includes('[object Object]')) {
-                  cleanExcerpt = stripHtml(item.content).substring(0, 150) + '...';
-               } else {
-                  cleanExcerpt = stripHtml(cleanExcerpt);
-               }
-            }
-
-            let cleanCategory = item.category;
-            if (String(cleanCategory) === '[object Object]') cleanCategory = 'Berita';
-
-            return {
-              id: item.id,
-              slug: item.slug,
-              title: item.title,
-              category: cleanCategory,
-              date: item.published_at
-                ? new Date(item.published_at).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })
-                : new Date(item.created_at).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  }),
-              image: item.cover_image || 'https://placehold.co/600x400/0d9488/ffffff?text=Versa+Article',
-              excerpt: cleanExcerpt,
-            };
-          });
-          setHomeArticles(mapped);
-        }
-      } catch (err) {
-        console.warn('Error fetching home articles:', err);
+    return data.map((item) => {
+      let cleanExcerpt = item.excerpt;
+      if (!cleanExcerpt || String(cleanExcerpt) === '[object Object]') {
+        cleanExcerpt = stripHtml(item.content).substring(0, 150) + '...';
+      } else {
+         if (typeof cleanExcerpt === 'string' && cleanExcerpt.includes('[object Object]')) {
+            cleanExcerpt = stripHtml(item.content).substring(0, 150) + '...';
+         } else {
+            cleanExcerpt = stripHtml(cleanExcerpt);
+         }
       }
-    }
-    
-    fetchHomeArticles();
-  }, []);
+
+      let cleanCategory = item.category;
+      if (String(cleanCategory) === '[object Object]') cleanCategory = 'Berita';
+
+      return {
+        id: item.id,
+        slug: item.slug,
+        title: item.title,
+        category: cleanCategory,
+        date: item.published_at
+          ? new Date(item.published_at).toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })
+          : new Date(item.created_at).toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            }),
+        image: item.cover_image || 'https://placehold.co/600x400/0d9488/ffffff?text=Versa+Article',
+        excerpt: cleanExcerpt,
+      };
+    });
+  };
+
+  const { data: homeArticles = [] } = useSWR('home-articles', fetchHomeArticles, {
+    revalidateOnFocus: false, // Jangan fetch ulang saat pindah tab browser
+    dedupingInterval: 60000, // Cache valid selama 1 menit sebelum cek lagi
+  });
 
   useEffect(() => {
     let resizeTimer;
