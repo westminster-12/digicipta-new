@@ -4,6 +4,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CookieConsent from './components/CookieConsent';
+import AnalyticsHandler from './components/AnalyticsHandler';
 
 // Public pages — lazy loaded, split ke chunk terpisah
 const Home = lazy(() => import('./pages/Home'));
@@ -63,6 +65,8 @@ function App() {
     <HelmetProvider>
       <AuthProvider>
         <Router>
+          <AnalyticsHandler />
+          <CookieConsent />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Public Pages */}
