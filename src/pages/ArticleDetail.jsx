@@ -44,7 +44,7 @@ export default function ArticleDetail() {
 
         // Update document title & meta tags for SEO
         if (data) {
-          document.title = data.seo_title || data.title ? `${data.seo_title || data.title} | Versa Design Studio` : 'Versa Design Studio';
+          document.title = data.seo_title || data.title ? `${data.seo_title || data.title} | PT. Versa Digicipta Semesta - Versa Design Studio` : 'PT. Versa Digicipta Semesta - Versa Design Studio';
           const metaDesc = document.querySelector('meta[name="description"]');
           if (metaDesc && (data.seo_description || data.excerpt)) {
             metaDesc.setAttribute('content', data.seo_description || data.excerpt);
