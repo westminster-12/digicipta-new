@@ -3,7 +3,7 @@ import { Search, Image as ImageIcon, Loader2, ZoomIn, X } from 'lucide-react';
 import './Portfolio.css';
 import SEO from '../components/SEO';
 import { supabase } from '../lib/supabase';
-
+import { trackEvent } from '../lib/analytics';
 const PAGE_SIZE = 30;
 
 const Portfolio = () => {
@@ -82,6 +82,10 @@ const Portfolio = () => {
   // Fetch when search changes
   useEffect(() => {
     fetchPortfolio(false);
+    
+    if (debouncedSearch.trim()) {
+      trackEvent('Portfolio', 'Search', debouncedSearch.trim());
+    }
   }, [debouncedSearch]);
 
   const handleLoadMore = () => {
