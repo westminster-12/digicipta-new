@@ -11,6 +11,8 @@ export default function AnalyticsHandler() {
     const consent = localStorage.getItem('cookieConsent');
     const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID;
     
+    console.log('Analytics Debug -> Consent:', consent, '| GA ID:', gaId);
+
     if (consent === 'accepted' && gaId) {
       if (!isInitialized) {
         ReactGA.initialize(gaId);
